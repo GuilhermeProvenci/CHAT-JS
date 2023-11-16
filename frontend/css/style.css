@@ -131,13 +131,14 @@ body {
 }
 
 .chat__messages > div {
-  padding:10px;
-  width: 100%;
-  max-width: 250px;
+  padding: 10px;
+  /*width: 100%;*/
+  max-width: 550px;
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 15px;
   line-height: 22px;
+  word-break: break-word; 
 }
 
 
