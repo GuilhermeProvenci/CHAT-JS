@@ -63,7 +63,7 @@ const sanitizeHTML = (html) => {
 };
 
 const processMessage = ({ data }) => {
-  const { userId, userName, userColor, content } = JSON.parse(data);
+  const { userId, userName, userColor, content, image } = JSON.parse(data);
 
   const sanitizedContent = sanitizeHTML(content);
 
@@ -71,6 +71,13 @@ const processMessage = ({ data }) => {
     userId === user.id
       ? createMessageSelfElement(sanitizedContent)
       : createMessageOtherElement(sanitizedContent, userName, userColor);
+
+  if (image) {
+    const imageElement = document.createElement('img');
+    imageElement.src = image;
+    imageElement.classList.add('message__image'); 
+    message.appendChild(imageElement);
+  }
 
   chatMessages.appendChild(message);
 
@@ -94,17 +101,78 @@ const handleLogin = (event) => {
 const sendMessage = (event) => {
   event.preventDefault();
 
-  const message = {
-    userId: user.id,
-    userName: user.name,
-    userColor: user.color,
-    content: chatInput.value
-  };
+  const messageContent = chatInput.value.trim();
 
-  websocket.send(JSON.stringify(message));
+  if (messageContent || imageInput.files.length > 0) {
+    // Cria um objeto de mensagem
+    const message = {
+      userId: user.id,
+      userName: user.name,
+      userColor: user.color,
+      content: messageContent,
+      image: null
+    };
 
-  chatInput.value = "";
+
+    if (imageInput.files.length > 0) {
+
+      const file = imageInput.files[0];
+
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+      
+        message.image = event.target.result;
+
+      
+        websocket.send(JSON.stringify(message));
+        
+        chatInput.value = "";
+        imageInput.value = "";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      websocket.send(JSON.stringify(message));
+      chatInput.value = "";
+    }
+  }
 };
+
+
+const chatImageInput = document.getElementById("imageInput");
+
+chatInput.addEventListener('paste', function(event) {  
+  if (event.clipboardData && event.clipboardData.items) {  
+    for (let i = 0; i < event.clipboardData.items.length; i++) {
+      const item = event.clipboardData.items[i];
+      
+      if (item.type.indexOf('image') !== -1) {      
+        const file = item.getAsFile();
+
+        // Cria um objeto DataTransfer
+        const dataTransfer = new DataTransfer();
+
+        // Adiciona o arquivo ao DataTransfer
+        dataTransfer.items.add(file);
+
+        // Define o objeto DataTransfer no input de imagem
+        chatImageInput.files = dataTransfer.files;
+
+        // Exibe a imagem para o usuário (opcional)
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const imageData = event.target.result;
+          // Exibir a imagem aqui, se necessário
+        };
+        reader.readAsDataURL(file);
+
+        break;
+      }
+    }
+  }
+});
+
+
 
 loginForm.addEventListener("submit", handleLogin);
 chatForm.addEventListener("submit", sendMessage);

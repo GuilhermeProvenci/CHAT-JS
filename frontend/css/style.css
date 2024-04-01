@@ -162,3 +162,9 @@ body {
   font-weight: 700;
   color: cadetblue;
 }
+
+.message__image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 5px; 
+}
