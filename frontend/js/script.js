@@ -56,13 +56,21 @@ const scrollScreen = () => {
   });
 };
 
+const sanitizeHTML = (html) => {
+  const div = document.createElement('div');
+  div.innerText = html;
+  return div.innerHTML;
+};
+
 const processMessage = ({ data }) => {
   const { userId, userName, userColor, content } = JSON.parse(data);
 
+  const sanitizedContent = sanitizeHTML(content);
+
   const message =
     userId === user.id
-      ? createMessageSelfElement(content)
-      : createMessageOtherElement(content, userName, userColor);
+      ? createMessageSelfElement(sanitizedContent)
+      : createMessageOtherElement(sanitizedContent, userName, userColor);
 
   chatMessages.appendChild(message);
 
