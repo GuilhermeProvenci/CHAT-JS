@@ -1,6 +1,6 @@
 const LOGIN_DISPLAY_CLASS = "login";
 const CHAT_DISPLAY_CLASS = "chat";
-const WebSocket_URL = "https://chat-frontend-d9v7.onrender.com/";
+const WebSocket_URL = "wss://chat-frontend-d9v7.onrender.com/";
 
 const login = document.querySelector(`.${LOGIN_DISPLAY_CLASS}`);
 const chat = document.querySelector(`.${CHAT_DISPLAY_CLASS}`);
@@ -97,6 +97,7 @@ const handleLogin = (event) => {
 
   websocket = new WebSocket(WebSocket_URL);
   websocket.onmessage = processMessage;
+  console.log('Logged in');
 };
 
 const sendMessage = (event) => {
