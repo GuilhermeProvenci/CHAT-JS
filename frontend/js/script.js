@@ -9,6 +9,7 @@ const loginInput = login.querySelector(".login__input");
 const chatForm = chat.querySelector(".chat__form");
 const chatInput = chat.querySelector(".chat__input");
 const chatMessages = chat.querySelector(".chat__messages");
+const imageInput = document.getElementById("imageInput");
 
 const colors = [
   "cadetblue",
@@ -103,8 +104,7 @@ const sendMessage = (event) => {
 
   const messageContent = chatInput.value.trim();
 
-  if (messageContent || imageInput.files.length > 0) {
-    // Cria um objeto de mensagem
+  if (messageContent || imageInput.files.length > 0) {  
     const message = {
       userId: user.id,
       userName: user.name,
@@ -118,7 +118,6 @@ const sendMessage = (event) => {
 
       const file = imageInput.files[0];
 
-      
       const reader = new FileReader();
       reader.onload = function(event) {
       
@@ -138,9 +137,6 @@ const sendMessage = (event) => {
   }
 };
 
-
-const chatImageInput = document.getElementById("imageInput");
-
 chatInput.addEventListener('paste', function(event) {  
   if (event.clipboardData && event.clipboardData.items) {  
     for (let i = 0; i < event.clipboardData.items.length; i++) {
@@ -148,21 +144,14 @@ chatInput.addEventListener('paste', function(event) {
       
       if (item.type.indexOf('image') !== -1) {      
         const file = item.getAsFile();
-
-        // Cria um objeto DataTransfer
+    
         const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);      
+        imageInput.files = dataTransfer.files;
 
-        // Adiciona o arquivo ao DataTransfer
-        dataTransfer.items.add(file);
-
-        // Define o objeto DataTransfer no input de imagem
-        chatImageInput.files = dataTransfer.files;
-
-        // Exibe a imagem para o usuário (opcional)
         const reader = new FileReader();
         reader.onload = function(event) {
           const imageData = event.target.result;
-          // Exibir a imagem aqui, se necessário
         };
         reader.readAsDataURL(file);
 
@@ -171,8 +160,6 @@ chatInput.addEventListener('paste', function(event) {
     }
   }
 });
-
-
 
 loginForm.addEventListener("submit", handleLogin);
 chatForm.addEventListener("submit", sendMessage);
