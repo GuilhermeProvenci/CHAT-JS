@@ -1,6 +1,6 @@
 const LOGIN_DISPLAY_CLASS = "login";
 const CHAT_DISPLAY_CLASS = "chat";
-const WebSocket_URL = "wss://chat-backend-bcsc.onrender.com";
+const WebSocket_URL = "https://chat-frontend-d9v7.onrender.com/";
 
 const login = document.querySelector(`.${LOGIN_DISPLAY_CLASS}`);
 const chat = document.querySelector(`.${CHAT_DISPLAY_CLASS}`);
@@ -10,6 +10,7 @@ const chatForm = chat.querySelector(".chat__form");
 const chatInput = chat.querySelector(".chat__input");
 const chatMessages = chat.querySelector(".chat__messages");
 const imageInput = document.getElementById("imageInput");
+
 
 const colors = [
   "cadetblue",
@@ -81,7 +82,6 @@ const processMessage = ({ data }) => {
   }
 
   chatMessages.appendChild(message);
-
   scrollScreen();
 };
 
@@ -104,7 +104,7 @@ const sendMessage = (event) => {
 
   const messageContent = chatInput.value.trim();
 
-  if (messageContent || imageInput.files.length > 0) {  
+  if (messageContent || imageInput.files.length > 0) {
     const message = {
       userId: user.id,
       userName: user.name,
@@ -113,29 +113,30 @@ const sendMessage = (event) => {
       image: null
     };
 
-
     if (imageInput.files.length > 0) {
-
       const file = imageInput.files[0];
-
       const reader = new FileReader();
-      reader.onload = function(event) {
-      
-        message.image = event.target.result;
 
-      
-        websocket.send(JSON.stringify(message));
+      reader.onload = function(event) {
+        message.image = event.target.result;
         
-        chatInput.value = "";
-        imageInput.value = "";
+          websocket.send(JSON.stringify(message));                
+          chatInput.value = "";
+          imageInput.value = "";        
+        //console.error("WebSocket is not open");        
       };
+
       reader.readAsDataURL(file);
-    } else {
-      websocket.send(JSON.stringify(message));
-      chatInput.value = "";
+    } else {      
+        websocket.send(JSON.stringify(message));        
+        chatInput.value = "";       
+        //console.error("WebSocket is not open");      
     }
   }
 };
+
+
+const chatImageInput = document.getElementById("imageInput");
 
 chatInput.addEventListener('paste', function(event) {  
   if (event.clipboardData && event.clipboardData.items) {  
@@ -149,9 +150,11 @@ chatInput.addEventListener('paste', function(event) {
         dataTransfer.items.add(file);      
         imageInput.files = dataTransfer.files;
 
+        // Exibe a imagem para o usuário (opcional)
         const reader = new FileReader();
         reader.onload = function(event) {
           const imageData = event.target.result;
+          // Exibir a imagem aqui, se necessário
         };
         reader.readAsDataURL(file);
 
@@ -160,6 +163,9 @@ chatInput.addEventListener('paste', function(event) {
     }
   }
 });
+
+
+
 
 loginForm.addEventListener("submit", handleLogin);
 chatForm.addEventListener("submit", sendMessage);
