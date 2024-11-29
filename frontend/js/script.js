@@ -1,6 +1,8 @@
 const LOGIN_DISPLAY_CLASS = "login";
 const CHAT_DISPLAY_CLASS = "chat";
-const WebSocket_URL = "wss://chat-frontend-d9v7.onrender.com";
+//const WebSocket_URL = "wss://chat-frontend-d9v7.onrender.com";
+const WebSocket_URL = "ws://localhost:8080";
+
 
 const login = document.querySelector(`.${LOGIN_DISPLAY_CLASS}`);
 const chat = document.querySelector(`.${CHAT_DISPLAY_CLASS}`);
@@ -75,15 +77,18 @@ const processMessage = ({ data }) => {
       : createMessageOtherElement(sanitizedContent, userName, userColor);
 
   if (image) {
+    console.log("Recebendo imagem:", image); // Confirma que o base64 chegou
     const imageElement = document.createElement('img');
-    imageElement.src = image;
-    imageElement.classList.add('message__image'); 
-    message.appendChild(imageElement);
+    imageElement.src = image; // Base64 da imagem
+    imageElement.alt = "Imagem enviada"; // Adiciona um texto alternativo
+    imageElement.classList.add('message__image'); // Classe CSS
+    message.appendChild(imageElement); // Adiciona ao elemento da mensagem
   }
 
-  chatMessages.appendChild(message);
+  chatMessages.appendChild(message); // Adiciona a mensagem completa ao chat
   scrollScreen();
 };
+
 
 const handleLogin = (event) => {
   event.preventDefault();
@@ -117,20 +122,29 @@ const sendMessage = (event) => {
     if (imageInput.files.length > 0) {
       const file = imageInput.files[0];
       const reader = new FileReader();
-
+    
       reader.onload = function(event) {
-        message.image = event.target.result;
-        
-          websocket.send(JSON.stringify(message));                
-          chatInput.value = "";
-          imageInput.value = "";        
-        //console.error("WebSocket is not open");        
+        message.image = event.target.result; // Base64 string da imagem
+        console.log("Imagem anexada à mensagem:", message.image);
+    
+        if (websocket.readyState === WebSocket.OPEN) {
+          websocket.send(JSON.stringify(message));
+          console.log("Mensagem enviada:", message);
+        } else {
+          console.error("WebSocket não está aberto.");
+        }
+    
+        chatInput.value = "";
+        imageInput.value = "";
       };
-
-      reader.readAsDataURL(file);
-    } else {      
+    
+      reader.readAsDataURL(file); // Lê o arquivo como Base64
+    }
+     else {      
         websocket.send(JSON.stringify(message));        
-        chatInput.value = "";       
+        chatInput.value = "";    
+        console.log(chatInput.value); 
+        console.log(message);           
         //console.error("WebSocket is not open");      
     }
   }
@@ -151,11 +165,10 @@ chatInput.addEventListener('paste', function(event) {
         dataTransfer.items.add(file);      
         imageInput.files = dataTransfer.files;
 
-        // Exibe a imagem para o usuário (opcional)
         const reader = new FileReader();
         reader.onload = function(event) {
           const imageData = event.target.result;
-          // Exibir a imagem aqui, se necessário
+
         };
         reader.readAsDataURL(file);
 
