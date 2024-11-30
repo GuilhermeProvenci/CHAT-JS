@@ -1,5 +1,3 @@
-
-
 * {
   margin: 0;
   padding: 0;
@@ -7,12 +5,13 @@
   font-family: "Inter", sans-serif;
 }
 
-:root{
+:root {
   font-size: 16px;
 }
 
 body {
-  background: url("../images/img_whats.jpeg");
+  /*background: url("../images/img_whats.jpeg");*/
+  background: url("../images/fundo.png");
   color: #f2f2f2;
 }
 
@@ -22,9 +21,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
-
 
 .login {
   width: 100%;
@@ -32,7 +29,6 @@ body {
   background-color: #212121;
   border-radius: 5px;
   padding: 20px;
-  
 }
 
 .login > h2 {
@@ -42,7 +38,7 @@ body {
   margin-bottom: 20px;
 }
 
-.login__form{
+.login__form {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -58,7 +54,6 @@ body {
   outline: none;
   border-radius: 5px;
 }
-
 
 .login__input:focus {
   outline: 2px solid #f2f2f2;
@@ -76,9 +71,8 @@ body {
 }
 
 .login__button:hover {
-  background-color: #f2f2f2;  
+  background-color: #f2f2f2;
 }
-
 
 .chat {
   width: 100%;
@@ -90,12 +84,12 @@ body {
 
 .chat__messages {
   flex-grow: 1;
-  padding: 30px 30px 90px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  overflow-y: auto; /* Ativa scroll vertical */
-  max-height: 500px; /* Altura máxima */
+  overflow-y: auto; 
+
 }
 
 .chat__form {
@@ -123,7 +117,7 @@ body {
 
 .chat__button {
   border: none;
-  background:none ;
+  background: none;
   color: #f2f2f2;
   cursor: pointer;
 }
@@ -132,17 +126,33 @@ body {
   font-size: 1.9rem;
 }
 
+/* Ícone de envio de imagem */
+.chat__image-label {
+  cursor: pointer;
+  color: #f2f2f2;
+}
+
+.chat__image-label > span {
+  font-size: 1.8rem;
+}
+
+.chat__image-input {
+  display: none;
+}
+
+/* Mensagens */
 .chat__messages > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 10px;
-  /*width: 100%;*/
   max-width: 550px;
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 15px;
   line-height: 22px;
-  word-break: break-word; 
+  word-break: break-word;
 }
-
 
 .message__self {
   background-color: #ddd;
@@ -160,14 +170,30 @@ body {
 
 .message__sender {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   font-weight: 700;
   color: cadetblue;
 }
 
 .message__image {
-  max-width: 200px; /* Limite de largura */
-  max-height: 200px; /* Limite de altura */
-  margin-top: 10px; /* Espaçamento da mensagem */
-  border-radius: 5px; /* Bordas arredondadas */
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 2px solid #444;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.message__image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.message__self .message__image {
+  border-color: #bbb;
+}
+
+.message__other .message__image {
+  border-color: #555;
 }
